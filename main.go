@@ -33,6 +33,15 @@ func initPopulation() [ChromossomesCount][DestinyLen]string {
 }
 
 func checkAdaptability(chromossomes *[ChromossomesCount][DestinyLen]string, adaptIndex *[ChromossomesCount]int) {
+	for i := 0; i < ChromossomesCount; i++ {
+		index := 0
+		for j := 0; j < DestinyLen; j++ {
+			if string(DESTINY[j]) == chromossomes[i][j] {
+				index++
+			}
+		}
+		adaptIndex[i] = index
+	}
 }
 
 func bestMatch(adaptIndex *[ChromossomesCount]int) int {
