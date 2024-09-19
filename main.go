@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	DESTINY           = "METHINKS IT IS LIKE A WEASEL"
-	DestinyLen        = len(DESTINY)
+	Destiny           = "METHINKS IT IS LIKE A WEASEL"
+	DestinyLen        = len(Destiny)
 	ChromossomesCount = 100
 	MutationFactor    = 4
 )
@@ -21,8 +21,8 @@ func main() {
 	for adaptabilityIndex[bestIndex] < DestinyLen {
 		checkAdaptability(&chromossomes, &adaptabilityIndex)
 		bestIndex = bestMatch(&adaptabilityIndex)
-		printBestMatch(cycleCount, bestIndex, &chromossomes)
-		crossOver(&adaptabilityIndex, &chromossomes, &newChromosomes)
+		printBestMatch(cycleCount, bestIndex, &chromossomes, &adaptabilityIndex)
+		crossOver(&chromossomes, &newChromosomes, &adaptabilityIndex)
 		mutate(&chromossomes)
 		cycleCount++
 	}
@@ -40,10 +40,10 @@ func initPopulation() [ChromossomesCount][DestinyLen]string {
 
 func checkAdaptability(chromossomes *[ChromossomesCount][DestinyLen]string, adaptIndex *[ChromossomesCount]int) {
 	for i := 0; i < ChromossomesCount; i++ {
-		index := 0
+		index := 50
 		for j := 0; j < DestinyLen; j++ {
-			if string(DESTINY[j]) == chromossomes[i][j] {
-				index++
+			if string(Destiny[j]) == chromossomes[i][j] {
+				index += 50
 			}
 		}
 		adaptIndex[i] = index
@@ -62,14 +62,15 @@ func bestMatch(adaptIndex *[ChromossomesCount]int) int {
 	return bestIndex
 }
 
-func printBestMatch(cycle int, index int, chromossomes *[ChromossomesCount][DestinyLen]string) {
-	fmt.Printf("Cycle %d : ", cycle)
+func printBestMatch(cycle int, index int, chromossomes *[ChromossomesCount][DestinyLen]string, adaptIndex *[ChromossomesCount]int) {
+	fmt.Printf("Cycle %d - %d - : '", cycle, adaptIndex[index])
 	for i := 0; i < DestinyLen; i++ {
-		fmt.Printf("%s", chromossomes[i][index])
+		fmt.Printf("%s", chromossomes[index][i])
 	}
+	fmt.Println("'")
 }
 
-func crossOver(adaptIndex *[ChromossomesCount]int, chrom *[ChromossomesCount][DestinyLen]string, newChrom *[ChromossomesCount][DestinyLen]string) {
+func crossOver(chrom *[ChromossomesCount][DestinyLen]string, newChrom *[ChromossomesCount][DestinyLen]string, adaptIndex *[ChromossomesCount]int) {
 	sum := sumIndices(adaptIndex)
 	parents := [2]int{}
 	parentsIndices := [2]int{}
