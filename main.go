@@ -28,21 +28,21 @@ func main() {
 	}
 }
 
-func initPopulation() [ChromossomesCount][DestinyLen]string {
-	arr := [ChromossomesCount][DestinyLen]string{}
+func initPopulation() [ChromossomesCount][DestinyLen]rune {
+	arr := [ChromossomesCount][DestinyLen]rune{}
 	for i := 0; i < ChromossomesCount; i++ {
 		for j := 0; j < DestinyLen; j++ {
-			arr[i][j] = "Z"
+			arr[i][j] = 'Z'
 		}
 	}
 	return arr
 }
 
-func checkAdaptability(chromossomes *[ChromossomesCount][DestinyLen]string, adaptIndex *[ChromossomesCount]int) {
+func checkAdaptability(chromossomes *[ChromossomesCount][DestinyLen]rune, adaptIndex *[ChromossomesCount]int) {
 	for i := 0; i < ChromossomesCount; i++ {
 		index := 1
 		for j := 0; j < DestinyLen; j++ {
-			if string(Destiny[j]) == chromossomes[i][j] {
+			if rune(Destiny[j]) == chromossomes[i][j] {
 				index += 1
 			}
 		}
@@ -62,15 +62,15 @@ func bestMatch(adaptIndex *[ChromossomesCount]int) int {
 	return bestIndex
 }
 
-func printBestMatch(cycle int, index int, chromossomes *[ChromossomesCount][DestinyLen]string, adaptIndex *[ChromossomesCount]int) {
+func printBestMatch(cycle int, index int, chromossomes *[ChromossomesCount][DestinyLen]rune, adaptIndex *[ChromossomesCount]int) {
 	fmt.Printf("Cycle %d - %d - : '", cycle, adaptIndex[index]-1)
 	for i := 0; i < DestinyLen; i++ {
-		fmt.Printf("%s", chromossomes[index][i])
+		fmt.Printf("%c", chromossomes[index][i])
 	}
 	fmt.Println("'")
 }
 
-func crossOver(chrom *[ChromossomesCount][DestinyLen]string, newChrom *[ChromossomesCount][DestinyLen]string, adaptIndex *[ChromossomesCount]int) {
+func crossOver(chrom *[ChromossomesCount][DestinyLen]rune, newChrom *[ChromossomesCount][DestinyLen]rune, adaptIndex *[ChromossomesCount]int) {
 	sum := sumIndices(adaptIndex)
 	parents := [2]int{}
 	indices := [2]int{}
@@ -139,14 +139,23 @@ func sumIndices(adaptIndex *[ChromossomesCount]int) int {
 	return sum
 }
 
-func mutate(chrom *[ChromossomesCount][DestinyLen]string) {
+func mutate(chrom *[ChromossomesCount][DestinyLen]rune) {
 	mutationCount := rand.Intn(MutationFactor)
 	for i := 0; i < mutationCount; i++ {
 		chosenChrom := rand.Intn(ChromossomesCount)
 		mutationPoint := rand.Intn(DestinyLen)
-		options := "ABCDEFGHIJKLMNOPQRSTUVXWYZ _"
-		pos := rand.Intn(len(options) - 1)
-		temp := options[pos : pos+1]
+		options :=
+			[]rune{
+				'A', 'B', 'C', 'D',
+				'E', 'F', 'G', 'H',
+				'I', 'J', 'K', 'L',
+				'M', 'N', 'O', 'P',
+				'Q', 'R', 'S', 'T',
+				'U', 'V', 'X', 'W',
+				'Y', 'Z', ' ',
+			}
+		pos := rand.Intn(len(options))
+		temp := options[pos]
 		chrom[chosenChrom][mutationPoint] = temp
 	}
 }
