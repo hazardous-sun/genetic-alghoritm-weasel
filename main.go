@@ -45,7 +45,15 @@ func checkAdaptability(chromossomes *[ChromossomesCount][DestinyLen]string, adap
 }
 
 func bestMatch(adaptIndex *[ChromossomesCount]int) int {
-	return 0
+	var bestIndex int
+	best := 0
+	for i := 0; i < ChromossomesCount; i++ {
+		if adaptIndex[i] > best {
+			best = adaptIndex[i]
+			bestIndex = i
+		}
+	}
+	return bestIndex
 }
 
 func printBestMatch(cycle int, index int, chromossomes *[ChromossomesCount][DestinyLen]string) {}
