@@ -14,11 +14,11 @@ const (
 
 func main() {
 	adaptabilityIndex := [ChromossomesCount]int{}
-	newChromosomes := [ChromossomesCount][DestinyLen]string{}
+	newChromosomes := initPopulation()
 	chromossomes := initPopulation()
 	cycleCount := 0
 	bestIndex := 0
-	for adaptabilityIndex[bestIndex] < DestinyLen {
+	for adaptabilityIndex[bestIndex] < DestinyLen+1 {
 		checkAdaptability(&chromossomes, &adaptabilityIndex)
 		bestIndex = bestMatch(&adaptabilityIndex)
 		printBestMatch(cycleCount, bestIndex, &chromossomes, &adaptabilityIndex)
@@ -40,10 +40,10 @@ func initPopulation() [ChromossomesCount][DestinyLen]string {
 
 func checkAdaptability(chromossomes *[ChromossomesCount][DestinyLen]string, adaptIndex *[ChromossomesCount]int) {
 	for i := 0; i < ChromossomesCount; i++ {
-		index := 50
+		index := 1
 		for j := 0; j < DestinyLen; j++ {
 			if string(Destiny[j]) == chromossomes[i][j] {
-				index += 50
+				index += 1
 			}
 		}
 		adaptIndex[i] = index
@@ -63,7 +63,7 @@ func bestMatch(adaptIndex *[ChromossomesCount]int) int {
 }
 
 func printBestMatch(cycle int, index int, chromossomes *[ChromossomesCount][DestinyLen]string, adaptIndex *[ChromossomesCount]int) {
-	fmt.Printf("Cycle %d - %d - : '", cycle, adaptIndex[index])
+	fmt.Printf("Cycle %d - %d - : '", cycle, adaptIndex[index]-1)
 	for i := 0; i < DestinyLen; i++ {
 		fmt.Printf("%s", chromossomes[index][i])
 	}
@@ -73,7 +73,7 @@ func printBestMatch(cycle int, index int, chromossomes *[ChromossomesCount][Dest
 func crossOver(chrom *[ChromossomesCount][DestinyLen]string, newChrom *[ChromossomesCount][DestinyLen]string, adaptIndex *[ChromossomesCount]int) {
 	sum := sumIndices(adaptIndex)
 	parents := [2]int{}
-	parentsIndices := [2]int{}
+	indices := [2]int{}
 	crossingOverPoint := -1
 	for i := 0; i < (ChromossomesCount / 2); i++ {
 		parents[0] = rand.Intn(sum)
@@ -87,38 +87,40 @@ func crossOver(chrom *[ChromossomesCount][DestinyLen]string, newChrom *[Chromoss
 			}
 		}
 
-		parentsIndices[0] = 0
+		// Roulette for first parent
+		indices[0] = 0
 		for parents[0] > 0 {
-			parents[0] -= adaptIndex[parentsIndices[0]]
-			parentsIndices[0]++
+			parents[0] -= adaptIndex[indices[0]]
+			indices[0]++
 		}
-		parentsIndices[0]--
+		indices[0]--
 
-		if parentsIndices[0] < 0 {
-			parentsIndices[0] = 0
+		if indices[0] < 0 {
+			indices[0] = 0
 		}
 
-		parentsIndices[1] = 0
+		// Roulette for second parent
+		indices[1] = 0
 		for parents[1] > 0 {
-			parents[1] -= adaptIndex[parentsIndices[1]]
-			parentsIndices[1]++
+			parents[1] -= adaptIndex[indices[1]]
+			indices[1]++
 		}
-		parentsIndices[1]--
+		indices[1]--
 
-		if parentsIndices[1] < 0 {
-			parentsIndices[1] = 0
+		if indices[1] < 0 {
+			indices[1] = 0
 		}
 
 		crossingOverPoint = rand.Intn(8) + 2
 
 		for j := 0; j < crossingOverPoint; j++ {
-			newChrom[i][j] = chrom[parentsIndices[0]][j]
-			newChrom[i+(ChromossomesCount/2)][j] = chrom[parentsIndices[1]][j]
+			newChrom[i][j] = chrom[indices[0]][j]
+			newChrom[i+(ChromossomesCount/2)][j] = chrom[indices[1]][j]
 		}
 
-		for j := 0; j < crossingOverPoint; j++ {
-			newChrom[i][j] = chrom[parentsIndices[1]][j]
-			newChrom[i+(ChromossomesCount/2)][j] = chrom[parentsIndices[0]][j]
+		for j := crossingOverPoint; j < DestinyLen; j++ {
+			newChrom[i][j] = chrom[indices[1]][j]
+			newChrom[i+(ChromossomesCount/2)][j] = chrom[indices[0]][j]
 		}
 	}
 
