@@ -9,6 +9,7 @@ const (
 	DESTINY           = "METHINKS IT IS LIKE A WEASEL"
 	DestinyLen        = len(DESTINY)
 	ChromossomesCount = 100
+	MutationFactor    = 4
 )
 
 func main() {
@@ -22,7 +23,7 @@ func main() {
 		bestIndex = bestMatch(&adaptabilityIndex)
 		printBestMatch(cycleCount, bestIndex, &chromossomes)
 		crossOver(&adaptabilityIndex, &chromossomes, &newChromosomes)
-		mutate()
+		mutate(&chromossomes)
 		cycleCount++
 	}
 }
@@ -135,6 +136,14 @@ func sumIndices(adaptIndex *[ChromossomesCount]int) int {
 	return sum
 }
 
-func mutate() {
-
+func mutate(chrom *[ChromossomesCount][DestinyLen]string) {
+	mutationCount := rand.Intn(MutationFactor)
+	for i := 0; i < mutationCount; i++ {
+		chosenChrom := rand.Intn(ChromossomesCount)
+		mutationPoint := rand.Intn(DestinyLen)
+		options := "ABCDEFGHIJKLMNOPQRSTUVXWYZ _"
+		pos := rand.Intn(len(options) - 1)
+		temp := options[pos : pos+1]
+		chrom[chosenChrom][mutationPoint] = temp
+	}
 }
