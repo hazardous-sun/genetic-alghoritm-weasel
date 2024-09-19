@@ -6,32 +6,32 @@ import (
 )
 
 const (
-	Destiny           = "METHINKS IT IS LIKE A WEASEL"
-	DestinyLen        = len(Destiny)
-	ChromossomesCount = 100
-	MutationFactor    = 4
-	Prize             = 100
+	Destiny          = "METHINKS IT IS LIKE A WEASEL"
+	DestinyLen       = len(Destiny)
+	ChromosomesCount = 100
+	MutationFactor   = 4
+	Prize            = 100
 )
 
 func main() {
-	adaptabilityIndex := [ChromossomesCount]int{}
+	adaptabilityIndex := [ChromosomesCount]int{}
 	newChromosomes := initPopulation()
-	chromossomes := initPopulation()
+	chromosomes := initPopulation()
 	cycleCount := 0
 	bestIndex := 0
 	for adaptabilityIndex[bestIndex] < DestinyLen*Prize {
-		checkAdaptability(&chromossomes, &adaptabilityIndex)
+		checkAdaptability(&chromosomes, &adaptabilityIndex)
 		bestIndex = bestMatch(&adaptabilityIndex)
-		printBestMatch(cycleCount, bestIndex, &chromossomes, &adaptabilityIndex)
-		crossOver(&chromossomes, &newChromosomes, &adaptabilityIndex)
-		mutate(&chromossomes)
+		printBestMatch(cycleCount, bestIndex, &chromosomes, &adaptabilityIndex)
+		crossOver(&chromosomes, &newChromosomes, &adaptabilityIndex)
+		mutate(&chromosomes)
 		cycleCount++
 	}
 }
 
-func initPopulation() [ChromossomesCount][DestinyLen]rune {
-	arr := [ChromossomesCount][DestinyLen]rune{}
-	for i := 0; i < ChromossomesCount; i++ {
+func initPopulation() [ChromosomesCount][DestinyLen]rune {
+	arr := [ChromosomesCount][DestinyLen]rune{}
+	for i := 0; i < ChromosomesCount; i++ {
 		for j := 0; j < DestinyLen; j++ {
 			arr[i][j] = 'Z'
 		}
@@ -39,11 +39,11 @@ func initPopulation() [ChromossomesCount][DestinyLen]rune {
 	return arr
 }
 
-func checkAdaptability(chromossomes *[ChromossomesCount][DestinyLen]rune, adaptIndex *[ChromossomesCount]int) {
-	for i := 0; i < ChromossomesCount; i++ {
+func checkAdaptability(chromosomes *[ChromosomesCount][DestinyLen]rune, adaptIndex *[ChromosomesCount]int) {
+	for i := 0; i < ChromosomesCount; i++ {
 		index := 1
 		for j := 0; j < DestinyLen; j++ {
-			if rune(Destiny[j]) == chromossomes[i][j] {
+			if rune(Destiny[j]) == chromosomes[i][j] {
 				index += Prize
 			}
 		}
@@ -51,10 +51,10 @@ func checkAdaptability(chromossomes *[ChromossomesCount][DestinyLen]rune, adaptI
 	}
 }
 
-func bestMatch(adaptIndex *[ChromossomesCount]int) int {
+func bestMatch(adaptIndex *[ChromosomesCount]int) int {
 	var bestIndex int
 	best := 0
-	for i := 0; i < ChromossomesCount; i++ {
+	for i := 0; i < ChromosomesCount; i++ {
 		if adaptIndex[i] > best {
 			best = adaptIndex[i]
 			bestIndex = i
@@ -63,20 +63,20 @@ func bestMatch(adaptIndex *[ChromossomesCount]int) int {
 	return bestIndex
 }
 
-func printBestMatch(cycle int, index int, chromossomes *[ChromossomesCount][DestinyLen]rune, adaptIndex *[ChromossomesCount]int) {
+func printBestMatch(cycle int, index int, chromosomes *[ChromosomesCount][DestinyLen]rune, adaptIndex *[ChromosomesCount]int) {
 	fmt.Printf("Cycle %d - %d - : '", cycle, adaptIndex[index]-1)
 	for i := 0; i < DestinyLen; i++ {
-		fmt.Printf("%c", chromossomes[index][i])
+		fmt.Printf("%c", chromosomes[index][i])
 	}
 	fmt.Println("'")
 }
 
-func crossOver(chrom *[ChromossomesCount][DestinyLen]rune, newChrom *[ChromossomesCount][DestinyLen]rune, adaptIndex *[ChromossomesCount]int) {
+func crossOver(chrom *[ChromosomesCount][DestinyLen]rune, newChrom *[ChromosomesCount][DestinyLen]rune, adaptIndex *[ChromosomesCount]int) {
 	sum := sumIndices(adaptIndex)
 	parents := [2]int{}
 	indices := [2]int{}
 	crossingOverPoint := -1
-	for i := 0; i < (ChromossomesCount / 2); i++ {
+	for i := 0; i < (ChromosomesCount / 2); i++ {
 		parents[0] = rand.Intn(sum)
 		parents[1] = rand.Intn(sum)
 
@@ -116,34 +116,34 @@ func crossOver(chrom *[ChromossomesCount][DestinyLen]rune, newChrom *[Chromossom
 
 		for j := 0; j < crossingOverPoint; j++ {
 			newChrom[i][j] = chrom[indices[0]][j]
-			newChrom[i+(ChromossomesCount/2)][j] = chrom[indices[1]][j]
+			newChrom[i+(ChromosomesCount/2)][j] = chrom[indices[1]][j]
 		}
 
 		for j := crossingOverPoint; j < DestinyLen; j++ {
 			newChrom[i][j] = chrom[indices[1]][j]
-			newChrom[i+(ChromossomesCount/2)][j] = chrom[indices[0]][j]
+			newChrom[i+(ChromosomesCount/2)][j] = chrom[indices[0]][j]
 		}
 	}
 
-	for i := 0; i < ChromossomesCount; i++ {
+	for i := 0; i < ChromosomesCount; i++ {
 		for j := 0; j < DestinyLen; j++ {
 			chrom[i][j] = newChrom[i][j]
 		}
 	}
 }
 
-func sumIndices(adaptIndex *[ChromossomesCount]int) int {
+func sumIndices(adaptIndex *[ChromosomesCount]int) int {
 	sum := 0
-	for i := 0; i < ChromossomesCount; i++ {
+	for i := 0; i < ChromosomesCount; i++ {
 		sum += adaptIndex[i]
 	}
 	return sum
 }
 
-func mutate(chrom *[ChromossomesCount][DestinyLen]rune) {
+func mutate(chrom *[ChromosomesCount][DestinyLen]rune) {
 	mutationCount := rand.Intn(MutationFactor)
 	for i := 0; i < mutationCount; i++ {
-		chosenChrom := rand.Intn(ChromossomesCount)
+		chosenChrom := rand.Intn(ChromosomesCount)
 		mutationPoint := rand.Intn(DestinyLen)
 		options :=
 			[]rune{
