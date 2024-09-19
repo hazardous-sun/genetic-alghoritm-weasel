@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+)
 
 const (
 	DESTINY           = "METHINKS IT IS LIKE A WEASEL"
@@ -66,10 +69,70 @@ func printBestMatch(cycle int, index int, chromossomes *[ChromossomesCount][Dest
 }
 
 func crossOver(adaptIndex *[ChromossomesCount]int, chrom *[ChromossomesCount][DestinyLen]string, newChrom *[ChromossomesCount][DestinyLen]string) {
+	sum := sumIndices(adaptIndex)
+	parents := [2]int{}
+	parentsIndices := [2]int{}
+	crossingOverPoint := -1
+	for i := 0; i < (ChromossomesCount / 2); i++ {
+		parents[0] = rand.Intn(sum)
+		parents[1] = rand.Intn(sum)
+
+		if parents[0] == parents[1] {
+			if parents[1] < 49 {
+				parents[1]++
+			} else {
+				parents[1]--
+			}
+		}
+
+		parentsIndices[0] = 0
+		for parents[0] > 0 {
+			parents[0] -= adaptIndex[parentsIndices[0]]
+			parentsIndices[0]++
+		}
+		parentsIndices[0]--
+
+		if parentsIndices[0] < 0 {
+			parentsIndices[0] = 0
+		}
+
+		parentsIndices[1] = 0
+		for parents[1] > 0 {
+			parents[1] -= adaptIndex[parentsIndices[1]]
+			parentsIndices[1]++
+		}
+		parentsIndices[1]--
+
+		if parentsIndices[1] < 0 {
+			parentsIndices[1] = 0
+		}
+
+		crossingOverPoint = rand.Intn(8) + 2
+
+		for j := 0; j < crossingOverPoint; j++ {
+			newChrom[i][j] = chrom[parentsIndices[0]][j]
+			newChrom[i+(ChromossomesCount/2)][j] = chrom[parentsIndices[1]][j]
+		}
+
+		for j := 0; j < crossingOverPoint; j++ {
+			newChrom[i][j] = chrom[parentsIndices[1]][j]
+			newChrom[i+(ChromossomesCount/2)][j] = chrom[parentsIndices[0]][j]
+		}
+	}
+
+	for i := 0; i < ChromossomesCount; i++ {
+		for j := 0; j < DestinyLen; j++ {
+			chrom[i][j] = newChrom[i][j]
+		}
+	}
 }
 
 func sumIndices(adaptIndex *[ChromossomesCount]int) int {
-	return 0
+	sum := 0
+	for i := 0; i < ChromossomesCount; i++ {
+		sum += adaptIndex[i]
+	}
+	return sum
 }
 
 func mutate() {
