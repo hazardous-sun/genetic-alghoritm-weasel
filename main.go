@@ -10,6 +10,7 @@ const (
 	DestinyLen        = len(Destiny)
 	ChromossomesCount = 100
 	MutationFactor    = 4
+	Prize             = 100
 )
 
 func main() {
@@ -18,7 +19,7 @@ func main() {
 	chromossomes := initPopulation()
 	cycleCount := 0
 	bestIndex := 0
-	for adaptabilityIndex[bestIndex] < DestinyLen+1 {
+	for adaptabilityIndex[bestIndex] < DestinyLen*Prize {
 		checkAdaptability(&chromossomes, &adaptabilityIndex)
 		bestIndex = bestMatch(&adaptabilityIndex)
 		printBestMatch(cycleCount, bestIndex, &chromossomes, &adaptabilityIndex)
@@ -43,7 +44,7 @@ func checkAdaptability(chromossomes *[ChromossomesCount][DestinyLen]rune, adaptI
 		index := 1
 		for j := 0; j < DestinyLen; j++ {
 			if rune(Destiny[j]) == chromossomes[i][j] {
-				index += 1
+				index += Prize
 			}
 		}
 		adaptIndex[i] = index

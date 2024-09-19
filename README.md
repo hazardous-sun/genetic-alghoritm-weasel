@@ -18,6 +18,7 @@ towards a target string, "METHINKS IT IS LIKE A WEASEL".
 - ChromossomesCount: Number of chromosomes in the population (default: 100).
 - MutationFactor: Number of mutations to introduce per cycle (default: 4).
 - Destiny: The target string ("METHINKS IT IS LIKE A WEASEL").
+- Prize: The value received after each successfully found part of the sentence.
 
 ## Customization
 
