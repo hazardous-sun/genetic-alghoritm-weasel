@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 const (
 	DESTINY           = "METHINKS IT IS LIKE A WEASEL"
 	DestinyLen        = len(DESTINY)
@@ -56,7 +58,12 @@ func bestMatch(adaptIndex *[ChromossomesCount]int) int {
 	return bestIndex
 }
 
-func printBestMatch(cycle int, index int, chromossomes *[ChromossomesCount][DestinyLen]string) {}
+func printBestMatch(cycle int, index int, chromossomes *[ChromossomesCount][DestinyLen]string) {
+	fmt.Printf("Cycle %d : ", cycle)
+	for i := 0; i < DestinyLen; i++ {
+		fmt.Printf("%s", chromossomes[i][index])
+	}
+}
 
 func crossOver(adaptIndex *[ChromossomesCount]int, chrom *[ChromossomesCount][DestinyLen]string, newChrom *[ChromossomesCount][DestinyLen]string) {
 }
